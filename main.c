@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <linux/limits.h>
 
 #define ALLOCATION_ERROR "fsh: allocation error\n"
 //Buffer size for readline function
@@ -17,22 +18,34 @@ int fsh_launch(char **args);
 void fsh_loop(void);
 int fsh_cd(char **args);
 int fsh_help(char **args);
+int fsh_pwd();
 int fsh_exit(char **args);
 
 char *builtin_str[] = {
     "cd",
     "help",
+    "pwd",
     "exit"
 };
 
 int (*builtin_func[]) (char **) = {
     &fsh_cd,
     &fsh_help,
+    &fsh_pwd,
     &fsh_exit
 };
 
 int fsh_num_builtins() {
   return sizeof(builtin_str) / sizeof(char *);
+}
+
+char *fsh_current_directory(){
+    static char cwd[PATH_MAX];
+    if (getcwd(cwd, sizeof(cwd)) != NULL) {
+        return cwd;
+    } else {
+        return "error getting current directory";
+    }
 }
 
 
@@ -167,7 +180,10 @@ void fsh_loop(void)
     int status;
 
     do {
-        printf("> ");
+        // char current_directory[PATH_MAX];
+        // strcpy(fsh_current_directory, current_directory);
+
+        printf("fsh > %s > " , fsh_current_directory());
         line = fsh_read_line();
         args = fsh_split_line(line);
         status = fsh_execute(args);
@@ -204,4 +220,15 @@ int fsh_help(char **args)
 int fsh_exit(char **args)
 {
     return 0;
+}
+
+int fsh_pwd(){
+    char cwd[PATH_MAX];
+    if (getcwd(cwd, sizeof(cwd)) != NULL) {
+        printf("current working directory: %s\n", cwd);
+    } else {
+        printf("error getting current directory");
+    }
+
+    return 1;
 }

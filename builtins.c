@@ -1,9 +1,6 @@
-#include <sys/wait.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
-#include <linux/limits.h>
 
 int fsh_cd(char **args);
 int fsh_help(char **args);
@@ -47,7 +44,7 @@ int fsh_help(char **args)
     printf("KSHyst's FayeShell\n");
 
     for (i = 0; i < fsh_num_builtins(); i++) {
-    printf("  %s\n", builtin_str[i]);
+        printf("  %s\n", builtin_str[i]);
     }
 
     return 1;

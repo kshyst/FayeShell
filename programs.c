@@ -89,10 +89,10 @@ int fsh_launch(char **args)
     pid = fork();
         if (pid == 0) {
         // Child process
-        if (execvp(args[0], args) == -1) {
-            perror("fsh");
-        }
-        exit(EXIT_FAILURE);
+            if (execvp(args[0], args) == -1) {
+                perror("fsh");
+            }
+            exit(EXIT_FAILURE);
         } else if (pid < 0) {
             // Error forking
             perror("fsh");

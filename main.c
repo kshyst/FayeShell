@@ -6,6 +6,9 @@
 #include <linux/limits.h>
 #include "builtins.c"
 #include "programs.c"
+#include "shapes_and_colors.c"
+
+void fsh_loop(void);
 
 char *fsh_current_directory(){
     static char cwd[PATH_MAX];
@@ -15,7 +18,6 @@ char *fsh_current_directory(){
         return "error getting current directory";
     }
 }
-
 
 int main(int argc, char **argv)
 {
@@ -53,15 +55,18 @@ void fsh_loop(void)
     char **args;
     int status;
 
-    do {
-        // char current_directory[PATH_MAX];
-        // strcpy(fsh_current_directory, current_directory);
+    char *command_line_start;
+    char *current_directory;
 
-        printf("fsh > %s > " , fsh_current_directory());
+    do {
+        command_line_start = fsh_command_line_start();
+        current_directory = fsh_current_directory();
+        
+        printf("%s %s > " , command_line_start, current_directory);
         line = fsh_read_line();
         args = fsh_split_line(line);
         status = fsh_execute(args);
-
+        
         free(line);
         free(args);
     } while (status);
